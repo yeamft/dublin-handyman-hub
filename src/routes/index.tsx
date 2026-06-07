@@ -49,20 +49,36 @@ function Index() {
       {/* Hero */}
       <section className="relative overflow-hidden gradient-hero text-primary-foreground">
         <div className="absolute inset-0 opacity-30 mix-blend-overlay [background-image:radial-gradient(circle_at_20%_20%,white,transparent_40%),radial-gradient(circle_at_80%_60%,white,transparent_50%)]" />
+
+        {/* Animated background orbs */}
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-pulse" />
+        <div className="absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-primary-glow/15 blur-3xl" style={{ animation: "float 7s ease-in-out infinite" }} />
+        <div className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/5 blur-2xl" />
+
         <div className="container relative mx-auto grid gap-12 px-4 py-20 md:px-6 md:py-28 lg:grid-cols-2 lg:items-center">
-          <div className="animate-fade-in">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-1.5 text-xs font-medium uppercase tracking-wider backdrop-blur">
+
+          {/* ── Left copy ── */}
+          <div className="flex flex-col">
+            <span className="hero-badge inline-flex w-fit items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-4 py-1.5 text-xs font-medium uppercase tracking-wider backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-primary-glow animate-pulse" /> Trusted across Dublin since 2014
             </span>
-            <h1 className="mt-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+
+            <h1 className="hero-h1 mt-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
               Reliable Handyman <br className="hidden md:block" />
-              Services Across <span className="text-primary-glow">Dublin</span>
+              Services Across{" "}
+              <span className="relative inline-block text-primary-glow">
+                Dublin
+                <span className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-primary-glow/60"
+                  style={{ animation: "hero-fade-right 0.8s cubic-bezier(0.22,1,0.36,1) 1s both" }} />
+              </span>
             </h1>
-            <p className="mt-5 max-w-xl text-base text-primary-foreground/80 md:text-lg">
+
+            <p className="hero-sub mt-5 max-w-xl text-base text-primary-foreground/80 md:text-lg">
               Professional home repairs, painting, gardening, and carpentry — done right, on time, and at fair Dublin prices.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild variant="hero" size="xl">
+
+            <div className="hero-btns mt-8 flex flex-wrap gap-3">
+              <Button asChild variant="hero" size="xl" className="hero-glow">
                 <Link to="/contact">Get a Free Quote <ArrowRight className="h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outlineHero" size="xl">
@@ -72,33 +88,60 @@ function Index() {
                 <a href="tel:+353871234567"><Phone className="h-4 w-4" /> Call Now</a>
               </Button>
             </div>
-            <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-primary-foreground/70">
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary-glow" /> Fully insured</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary-glow" /> Free quotes</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary-glow" /> 5-star rated</div>
+
+            <div className="hero-trust mt-10 flex flex-wrap items-center gap-6 text-sm text-primary-foreground/70">
+              {[
+                "Fully insured",
+                "Free quotes",
+                "5-star rated",
+              ].map((label, i) => (
+                <div key={label} className="flex items-center gap-2"
+                  style={{ animation: `hero-fade-up 0.5s cubic-bezier(0.22,1,0.36,1) ${0.95 + i * 0.12}s both` }}>
+                  <CheckCircle2 className="h-4 w-4 text-primary-glow" /> {label}
+                </div>
+              ))}
             </div>
           </div>
-          <div className="relative animate-scale-in">
-            <div className="absolute -inset-6 rounded-3xl bg-primary/20 blur-3xl" />
-            <img
-              src={heroImg}
-              width={1600}
-              height={1200}
-              alt="Professional Fix It Dublin handyman ready to help"
-              className="relative rounded-3xl shadow-elegant w-full h-auto object-cover aspect-[4/3]"
-            />
-            <div className="absolute -bottom-5 -left-5 hidden md:flex items-center gap-3 rounded-2xl bg-background text-foreground px-4 py-3 shadow-elegant">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+
+          {/* ── Right image ── */}
+          <div className="hero-img relative">
+            {/* Glow blob */}
+            <div className="absolute -inset-6 rounded-3xl bg-primary/25 blur-3xl" style={{ animation: "glow-pulse 3s ease-in-out infinite" }} />
+
+            {/* Floating image wrapper */}
+            <div className="hero-float relative">
+              <img
+                src={heroImg}
+                width={1600}
+                height={1200}
+                alt="Professional Fix It Dublin handyman ready to help"
+                className="relative rounded-3xl shadow-elegant w-full h-auto object-cover aspect-[4/3] ring-1 ring-white/10"
+              />
+
+              {/* Rating badge */}
+              <div className="hero-rating absolute -bottom-5 -left-5 hidden md:flex items-center gap-3 rounded-2xl bg-background text-foreground px-4 py-3 shadow-elegant">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
+                </div>
+                <div className="text-xs">
+                  <div className="font-semibold">4.9 / 5</div>
+                  <div className="text-muted-foreground">200+ Dublin reviews</div>
+                </div>
               </div>
-              <div className="text-xs"><div className="font-semibold">4.9 / 5</div><div className="text-muted-foreground">200+ Dublin reviews</div></div>
+
+              {/* Jobs done badge */}
+              <div className="absolute -top-4 -right-4 hidden md:flex flex-col items-center justify-center h-20 w-20 rounded-full bg-primary shadow-glow text-primary-foreground text-center"
+                style={{ animation: "badge-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.3s both" }}>
+                <span className="text-xl font-bold leading-none">500+</span>
+                <span className="text-[9px] uppercase tracking-wide opacity-80 leading-tight">Jobs done</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Why us */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-2xl">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Why Fix It Dublin</span>
@@ -120,7 +163,7 @@ function Index() {
       </section>
 
       {/* Services */}
-      <section className="py-20 md:py-28 bg-secondary/40">
+      <section className="py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
@@ -155,7 +198,7 @@ function Index() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 md:py-28 bg-background">
+      <section className="py-20 md:py-28">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-2xl">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">Customer Stories</span>

@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,6 +15,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { FloatingActions } from "@/components/site/FloatingActions";
+import { ParticleBackground } from "@/components/site/ParticleBackground";
+import { PageLoader } from "@/components/site/PageLoader";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -127,16 +130,20 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
+      <PageLoader />
       <div className="flex min-h-screen flex-col">
-        <SiteHeader />
+        <ParticleBackground />
+        {!isAdminRoute && <SiteHeader />}
         <main className="flex-1">
           <Outlet />
         </main>
-        <SiteFooter />
-        <FloatingActions />
+        {!isAdminRoute && <SiteFooter />}
+        {!isAdminRoute && <FloatingActions />}
         <Toaster richColors position="top-center" />
       </div>
     </QueryClientProvider>

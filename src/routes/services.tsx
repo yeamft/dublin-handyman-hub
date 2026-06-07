@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
-import { services } from "@/lib/services-data";
+import { services as staticServices } from "@/lib/services-data";
+import { getAdminData, type AdminService, builtinCategories } from "@/lib/admin-store";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -19,6 +21,14 @@ export const Route = createFileRoute("/services")({
 });
 
 function ServicesPage() {
+  const [adminServices, setAdminServices] = useState<AdminService[]>([]);
+  useEffect(() => { setAdminServices(getAdminData().services); }, []);
+
+  const allServices = [
+    ...staticServices.map((s) => ({ ...s, image: s.image as string, imageDataUrl: undefined as string | undefined, benefits: [...s.benefits] })),
+    ...adminServices.map((s) => ({ slug: s.slug, title: s.title, image: "", imageDataUrl: s.imageDataUrl, category: s.category, description: s.description, benefits: s.benefits })),
+  ];
+
   return (
     <>
       <PageHero eyebrow="Our Services" title="Everything your home needs" subtitle="One trusted team for repairs, painting, gardening, carpentry and ongoing property maintenance." />
@@ -26,11 +36,13 @@ function ServicesPage() {
       <section className="py-20 md:py-28 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-8 md:grid-cols-2">
-            {services.map((s) => (
+            {allServices.map((s) => (
               <article key={s.slug} className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-smooth hover:-translate-y-1 hover:shadow-elegant">
-                <div className="overflow-hidden aspect-[16/10]">
-                  <img src={s.image} alt={s.title} loading="lazy" width={1200} height={900} className="h-full w-full object-cover transition-smooth group-hover:scale-105" />
-                </div>
+                {(s.imageDataUrl || s.image) && (
+                  <div className="overflow-hidden aspect-[16/10]">
+                    <img src={s.imageDataUrl || s.image} alt={s.title} loading="lazy" width={1200} height={900} className="h-full w-full object-cover transition-smooth group-hover:scale-105" />
+                  </div>
+                )}
                 <div className="flex flex-1 flex-col p-7">
                   <span className="text-xs font-semibold uppercase tracking-widest text-primary">{s.category}</span>
                   <h3 className="mt-2 text-2xl font-bold text-dark-gray">{s.title}</h3>

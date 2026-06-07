@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
-import { categories, services, type ServiceCategory } from "@/lib/services-data";
+import { categories, services as staticServices, type ServiceCategory } from "@/lib/services-data";
+import { getAdminData, type AdminPortfolioItem, builtinCategories } from "@/lib/admin-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/portfolio")({
@@ -19,25 +20,36 @@ export const Route = createFileRoute("/portfolio")({
   component: PortfolioPage,
 });
 
-type Item = { id: number; title: string; category: ServiceCategory; image: string; span: "tall" | "wide" | "normal" };
+type Item = { id: string; title: string; category: string; image: string; span: "tall" | "wide" | "normal" };
 
-function buildItems(): Item[] {
+function buildStaticItems(): Item[] {
   const spans: Item["span"][] = ["tall", "normal", "wide", "normal", "normal", "tall", "wide", "normal", "normal", "tall", "normal", "wide"];
-  const arr: Item[] = [];
-  let id = 0;
-  for (let i = 0; i < 12; i++) {
-    const s = services[i % services.length];
-    arr.push({ id: id++, title: `${s.title} project`, category: s.category, image: s.image, span: spans[i] });
-  }
-  return arr;
+  return Array.from({ length: 12 }, (_, i) => {
+    const s = staticServices[i % staticServices.length];
+    return { id: `static-${i}`, title: `${s.title} project`, category: s.category, image: s.image, span: spans[i] };
+  });
 }
 
 function PortfolioPage() {
-  const items = useMemo(buildItems, []);
-  const [filter, setFilter] = useState<ServiceCategory | "All">("All");
-  const [lightbox, setLightbox] = useState<Item | null>(null);
+  const staticItems = useMemo(buildStaticItems, []);
+  const [adminItems, setAdminItems] = useState<AdminPortfolioItem[]>([]);
+  const [customCats, setCustomCats] = useState<string[]>([]);
+  useEffect(() => {
+    const d = getAdminData();
+    setAdminItems(d.portfolio);
+    setCustomCats(d.customCategories);
+  }, []);
 
-  const filtered = filter === "All" ? items : items.filter((i) => i.category === filter);
+  const allItems: Item[] = [
+    ...staticItems,
+    ...adminItems.map((p) => ({ id: p.id, title: p.title, category: p.category, image: p.imageDataUrl || p.imageUrl, span: p.span })),
+  ];
+
+  const allFilterCats = [...new Set([...builtinCategories, ...customCats, ...adminItems.map((p) => p.category)])];
+
+  const [filter, setFilter] = useState<string>("All");
+  const [lightbox, setLightbox] = useState<Item | null>(null);
+  const filtered = filter === "All" ? allItems : allItems.filter((i) => i.category === filter);
 
   return (
     <>
@@ -46,7 +58,7 @@ function PortfolioPage() {
       <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-wrap gap-2 justify-center">
-            {(["All", ...categories] as const).map((c) => (
+            {(["All", ...allFilterCats] as string[]).map((c) => (
               <button
                 key={c}
                 onClick={() => setFilter(c)}

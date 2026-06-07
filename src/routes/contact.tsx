@@ -11,6 +11,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { PageHero } from "@/components/site/PageHero";
+import { addAppointmentRequest, addContactMessage } from "@/lib/admin-store";
+import { sendContactEmail, sendBookingEmail } from "@/lib/api/contact.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -70,7 +72,7 @@ function ContactPage() {
           <div className="grid gap-6 md:grid-cols-4">
             {[
               { icon: Phone, title: "Call us", value: "+353 87 123 4567", href: "tel:+353871234567" },
-              { icon: Mail, title: "Email", value: "hello@fixitdublin.com", href: "mailto:hello@fixitdublin.com" },
+              { icon: Mail, title: "Email", value: "jim.obrien61@gmail.com", href: "mailto:jim.obrien61@gmail.com" },
               { icon: MapPin, title: "Service area", value: "All across Dublin" },
               { icon: Clock, title: "Hours", value: "Mon–Sat: 8:00 – 19:00" },
             ].map((c) => (
@@ -160,6 +162,8 @@ function QuickContactForm() {
     setErrors({});
     setLoading(true);
     setTimeout(() => {
+      addContactMessage(result.data);
+      sendContactEmail({ data: result.data }).catch(console.error);
       setLoading(false);
       form.reset();
       toast.success("Message sent — we'll be in touch within a few hours.");
@@ -210,6 +214,17 @@ function BookingForm() {
     setErrors({});
     setLoading(true);
     setTimeout(() => {
+      addAppointmentRequest({
+        fullName: result.data.fullName,
+        email: result.data.email,
+        phone: result.data.phone,
+        service: result.data.service,
+        date: result.data.date,
+        time: result.data.time,
+        address: result.data.address,
+        notes: result.data.notes,
+      });
+      sendBookingEmail({ data: { ...result.data, notes: result.data.notes ?? "" } }).catch(console.error);
       setLoading(false);
       form.reset();
       setService("");
