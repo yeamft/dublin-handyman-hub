@@ -1,20 +1,15 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import tsconfigPaths from "vite-tsconfig-paths";
-import tailwindcss from "@tailwindcss/vite";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  plugins: [
-    TanStackRouterVite({ target: "react", autoCodeSplitting: true }),
-    react(),
-    tailwindcss(),
-    tsconfigPaths(),
-  ],
-  preview: {
-    allowedHosts: ["all"],
-  },
-  server: {
-    allowedHosts: ["all"],
+  vite: {
+    server: {
+      port: 5173,
+      host: true,
+      strictPort: false,
+    },
+    preview: {
+      port: 4173,
+      host: true,
+    },
   },
 });
