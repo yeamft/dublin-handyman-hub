@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Star, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
+import { TestimonialAvatar } from "@/components/site/TestimonialAvatar";
 
 export const Route = createFileRoute("/testimonials")({
   head: () => ({
@@ -58,9 +59,12 @@ function TestimonialsPage() {
                   {[...Array(r.rating)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
                 </div>
                 <p className="mt-4 text-foreground leading-relaxed">"{r.text}"</p>
-                <div className="mt-6 border-t border-border pt-4">
-                  <div className="text-sm font-semibold text-dark-gray">{r.name}</div>
-                  <div className="text-xs text-muted-foreground">{r.area}</div>
+                <div className="mt-6 flex items-center gap-3 border-t border-border pt-4">
+                  <TestimonialAvatar name={r.name} />
+                  <div>
+                    <div className="text-sm font-semibold text-dark-gray">{r.name}</div>
+                    <div className="text-xs text-muted-foreground">{r.area}</div>
+                  </div>
                 </div>
               </div>
             ))}

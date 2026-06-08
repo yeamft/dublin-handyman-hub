@@ -12,6 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TestimonialAvatar } from "@/components/site/TestimonialAvatar";
 import { services } from "@/lib/services-data";
 import heroImg from "@/assets/hero-handyman.jpg";
 
@@ -74,7 +75,7 @@ function Index() {
             </h1>
 
             <p className="hero-sub mt-5 max-w-xl text-base text-primary-foreground/80 md:text-lg">
-              Professional home repairs, painting, gardening, and carpentry — done right, on time, and at fair Dublin prices.
+              Professional home repairs, painting, gardening, and carpentry done right, on time, and at fair Dublin prices.
             </p>
 
             <div className="hero-btns mt-8 flex flex-wrap gap-3">
@@ -176,9 +177,9 @@ function Index() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.slice(0, 6).map((s) => (
-              <Link
+              <a
                 key={s.slug}
-                to="/services"
+                href={`/services#${s.slug}`}
                 className="group block overflow-hidden rounded-2xl bg-card border border-border shadow-card transition-smooth hover:-translate-y-1 hover:shadow-elegant"
               >
                 <div className="overflow-hidden aspect-[4/3]">
@@ -191,7 +192,7 @@ function Index() {
                     Learn more <ArrowRight className="h-4 w-4" />
                   </span>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -211,9 +212,12 @@ function Index() {
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-primary text-primary" />)}
                 </div>
                 <p className="mt-4 text-foreground leading-relaxed">"{t.text}"</p>
-                <div className="mt-5 border-t border-border pt-4">
-                  <div className="text-sm font-semibold text-dark-gray">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.area}</div>
+                <div className="mt-5 flex items-center gap-3 border-t border-border pt-4">
+                  <TestimonialAvatar name={t.name} size="sm" />
+                  <div>
+                    <div className="text-sm font-semibold text-dark-gray">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.area}</div>
+                  </div>
                 </div>
               </div>
             ))}
